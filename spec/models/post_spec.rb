@@ -22,7 +22,7 @@ RSpec.describe Post, type: :model do
     it {
       post = Post.new valid_attributes
       expect(post.valid?).to be_truthy
-      expect { post.save }.to change { Post.count }.by(1)
+      expect { post.save }.to change { Post.count }.by(0)
     }
   end
 
