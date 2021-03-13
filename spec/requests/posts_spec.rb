@@ -13,15 +13,21 @@
 # sticking to rails and rspec-rails APIs to keep things simple and stable.
 
 RSpec.describe "/posts", type: :request do
-  
+
   # Post. As you add validations to Post, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      title: "A new blog post",
+      body: "The body of the post"
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    {
+      title: nil,
+      body: nil
+    }
   }
 
   describe "GET /index" do
@@ -78,7 +84,7 @@ RSpec.describe "/posts", type: :request do
 
       it "renders a successful response (i.e. to display the 'new' template)" do
         post posts_url, params: { post: invalid_attributes }
-        expect(response).to be_successful
+        expect(response).to have_http_status(422)
       end
     end
   end
@@ -108,7 +114,7 @@ RSpec.describe "/posts", type: :request do
       it "renders a successful response (i.e. to display the 'edit' template)" do
         post = Post.create! valid_attributes
         patch post_url(post), params: { post: invalid_attributes }
-        expect(response).to be_successful
+        expect(response).to have_http_status(422)
       end
     end
   end

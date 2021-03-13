@@ -67,7 +67,17 @@ jobs:
           command: bundle exec rubocop
       - run:
           name: Rspec test
-          command: bundle exec rspec spec/
+          command: |
+            mkdir ~/rspec
+            bundle exec rspec --format progress --format RspecJunitFormatter -o ~/rspec/rspec.xml
+            mv coverage ~/rspec/coverage
+          no_output_timeout: 20m
+      # collect reports
+      - store_test_results:
+          path: ~/rspec
+
+      - store_artifacts:
+          path: ~/rspec
 workflows:
   version: 2
   test:
