@@ -10,7 +10,7 @@ default:
 jobs:
   - name: build
     stage: build
-    image: hatd/circle-ci:3.0
+    image: hatd/circle-ci:3.1
     environment:
       BUNDLE_PATH: vendor/bundle
       BUNDLER_VERSION: 2.1.4
