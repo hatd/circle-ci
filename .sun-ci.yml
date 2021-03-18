@@ -1,0 +1,22 @@
+workspace: true
+
+stages:
+  - build
+  - test
+default:
+  environment:
+    GEMFILE_CHECKSUM: checksum "Gemfile.lock"
+
+jobs:
+  - name: build
+    stage: build
+    image: hatd/circle-ci:3.0
+    environment:
+      BUNDLE_PATH: vendor/bundle
+      BUNDLER_VERSION: 2.1.4
+    script:
+      - echo $GEMFILE_CHECKSUM
+    #   - bundle check || bundle install --jobs=4 --retry=3
+    #   - mkdir ./.sun-ci-reports
+    # cache:
+    #   - key: v1-gem-cache
