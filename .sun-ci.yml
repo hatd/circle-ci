@@ -59,6 +59,7 @@ jobs:
       - bundle exec rails db:create db:migrate
     script:
       - bundle exec rspec --format progress --format html --out .sun-ci-reports/rspec.html spec
+      - mv coverage ./.sun-ci-reports/coverage
     artifacts:
       paths:
         - ./.sun-ci-reports/rspec.html
