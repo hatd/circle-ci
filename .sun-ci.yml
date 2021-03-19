@@ -24,10 +24,9 @@ jobs:
     image: hatd/circle-ci:4.0
     environment:
       BUNDLE_PATH: vendor/bundle
-    before-script:
+    before_script:
       - bundle check || bundle install --jobs=4 --retry=3
     script:
-      - bundle -v
       - bundle exec rubocop --format html -o .sun-ci-reports/rubocop.html
     artifacts:
       paths:
@@ -50,7 +49,7 @@ jobs:
       DATABASE_PASSWORD: password
       BUNDLER_VERSION: 2.1.4
       RAILS_ENV: test
-    before-script:
+    before_script:
       - bundle check || bundle install --jobs=4 --retry=3
       - bundle exec rails db:create db:migrate
     script:
