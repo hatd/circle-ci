@@ -13,11 +13,15 @@ jobs:
       BUNDLER_VERSION: 2.1.4
     script:
       - bundle check || bundle install --jobs=4 --retry=3
+      - yarn install --check-files
+      - bundle exec rails assets:precompile
       - mkdir ./.sun-ci-reports
     cache:
-      - key: vendor_$CI_BRANCH
+      - key: v1_cache_$CI_BRANCH
         paths:
           - vendor/bundle
+          - public/assets
+          - tmp/cache/assets/sprockets
 
   - name: test:rubocop
     stage: test
@@ -51,6 +55,7 @@ jobs:
       RAILS_ENV: test
     before_script:
       - bundle check || bundle install --jobs=4 --retry=3
+      - bundle exec rails assets:precompile
       - bundle exec rails db:create db:migrate
     script:
       - bundle exec rspec --format progress --format html --out .sun-ci-reports/rspec.html spec
