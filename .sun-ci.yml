@@ -3,9 +3,6 @@ workspace: true
 stages:
   - build
   - test
-default:
-  environment:
-    GEMFILE_CHECKSUM: checksum "Gemfile.lock"
 
 jobs:
   - name: build
@@ -15,10 +12,52 @@ jobs:
       BUNDLE_PATH: vendor/bundle
       BUNDLER_VERSION: 2.1.4
     script:
-      - export GEMFILE_CHECKSUM = checksum "Gemfile.lock"
-      - ls
-      - echo $GEMFILE_CHECKSUM
-    #   - bundle check || bundle install --jobs=4 --retry=3
-    #   - mkdir ./.sun-ci-reports
-    # cache:
-    #   - key: v1-gem-cache
+      - bundle check || bundle install --jobs=4 --retry=3
+      - mkdir ./.sun-ci-reports
+    cache:
+      - key: vendor_$CI_BRANCH
+        paths:
+          - vendor/bundle
+
+  - name: test:rubocop
+    stage: test
+    image: hatd/circle-ci:4.0
+    environment:
+      BUNDLE_PATH: vendor/bundle
+    before-script:
+      - bundle check || bundle install --jobs=4 --retry=3
+    script:
+      - bundle -v
+      - bundle exec rubocop --format html -o .sun-ci-reports/rubocop.html
+    artifacts:
+      paths:
+        - ./.sun-ci-reports/rubocop.html
+
+  # - name: test:rspec
+  #   stage: test
+  #   image: hatd/circle-ci:4.0
+    # environment:
+    #   BUNDLE_PATH: vendor/bundle
+  #   services:
+  #     - image: mysql:5.7.33
+  #       name: db
+  #       environment:
+  #         DATABASE_USERNAME: root
+  #         DATABASE_PASSWORD: password
+  #         MYSQL_ROOT_PASSWORD: password
+  #   environment:
+  #     BUNDLE_PATH: vendor/bundle
+  #     DATABASE_HOSTNAME: db
+  #     DATABASE_USERNAME: root
+  #     DATABASE_PASSWORD: password
+  #     BUNDLER_VERSION: 2.1.4
+  #     RAILS_ENV: test
+  #   before-script:
+  #     - bundle check || bundle install --jobs=4 --retry=3
+  #     - bundle exec rails db:create db:migrate
+  #   script:
+  #     - bundle exec rspec --format progress --format html --out .sun-ci-reports/rspec.html spec
+  #   artifacts:
+  #     paths:
+  #       - ./.sun-ci-reports/rspec.html
+  #       - ./.sun-ci-reports/coverage/
