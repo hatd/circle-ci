@@ -32,7 +32,20 @@ jobs:
       RAILS_ENV: test
     steps:
       - uses: actions/checkout@v1
-      - uses: docker://hatd/circle-ci:4.0
-      - name: Bundle install
+      - uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.7.1'
+      - name: Set up Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.21.0
+      - uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Bundle Install
         run: |
-          bundle install
+          bundle check || bundle install --jobs 4 --retry 3
+          yarn install
